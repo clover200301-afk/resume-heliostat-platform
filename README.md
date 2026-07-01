@@ -4,7 +4,9 @@
 >
 > 从物理建模到论文，再到面向企业/国家选址决策的浏览器仿真平台 —— 一个仓库全部搞定。
 
-![Overview](docs/screenshot-overview.png)
+![Hero](docs/screenshot-hero.png)
+
+<p align="center"><i>斜角俯瞰：夏至正午 12:00，甘肃玉门站点，2454 面 7×5 m 定日镜同步指向塔顶集热器，DNI 1.07 kW/m²，瞬时功率 62 MW</i></p>
 
 ## ✨ 项目一览
 
@@ -102,9 +104,13 @@ $$
 
 ## 🖼️ 更多截图
 
+**俯瞰整场镜阵（正午同心环 + 东西向维护通道清晰可见）**
+
+![Top-down overview](docs/screenshot-overview.png)
+
 <p align="center">
-  <img src="docs/screenshot-scene.png" width="49%" />
-  <img src="docs/screenshot-side.png" width="49%" />
+  <img src="docs/screenshot-scene.png" width="49%" alt="Sunset perspective" />
+  <img src="docs/screenshot-side.png" width="49%" alt="Sidebar close-up" />
 </p>
 
 ## 📄 许可 & 引用
