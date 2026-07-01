@@ -108,11 +108,6 @@ $$
 
 ![Top-down overview](docs/screenshot-overview.png)
 
-<p align="center">
-  <img src="docs/screenshot-scene.png" width="49%" alt="Sunset perspective" />
-  <img src="docs/screenshot-side.png" width="49%" alt="Sidebar close-up" />
-</p>
-
 ## 📄 许可 & 引用
 
 - 论文正文与结果数据：作者原创（CUMCM 2023 A 题解答）
