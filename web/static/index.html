@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>定日镜场在线仿真选址平台</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="" />
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+
+  <main class="layout">
+
+    <!-- LEFT: full-height 3D scene -->
+    <section class="scene-panel">
+      <div id="scene"></div>
+      <div class="scene-hint">
+        <span>🖱️ 拖动旋转 · 滚轮缩放 · 右键平移</span>
+      </div>
+      <div class="scene-badge" id="sceneBadge">
+        <span id="badgeTime">12:00</span> · <span id="badgeLoc">39.4°N 98.5°E</span>
+      </div>
+    </section>
+
+    <!-- RIGHT: single scrollable sidebar with EVERYTHING -->
+    <aside class="sidebar">
+
+      <!-- brand -->
+      <div class="side-block brand-block">
+        <div class="brand-title">☀️ 定日镜发电站</div>
+        <div class="brand-sub">在线仿真选址平台 · CUMCM 2023A</div>
+      </div>
+
+      <!-- Controls (formerly the top bar) -->
+      <div class="side-block controls-block">
+        <div class="side-title">⚙️ 仿真参数</div>
+
+        <div class="ctrl-row">
+          <label class="ctrl">
+            <span>日期</span>
+            <input type="date" id="date" value="2023-06-21" />
+          </label>
+        </div>
+
+        <div class="ctrl-row">
+          <label class="ctrl full">
+            <span>时间 <b id="lblTime">12:00</b></span>
+            <input type="range" id="time" min="5" max="20" step="0.1" value="12" />
+          </label>
+        </div>
+
+        <div class="ctrl-row">
+          <label class="ctrl full">
+            <span>海拔 <b id="lblAlt">3.0 km</b></span>
+            <input type="range" id="alt" min="0" max="5" step="0.1" value="3" />
+          </label>
+        </div>
+
+        <div class="ctrl-row">
+          <label class="ctrl full">
+            <span>大气清澈度 <b id="lblClear">1.00</b></span>
+            <input type="range" id="clear" min="0.4" max="1.0" step="0.02" value="1" />
+          </label>
+        </div>
+
+        <div class="ctrl-row">
+          <label class="ctrl full">
+            <span>镜面尺寸 <b id="lblSize">5.0 m</b> · 当前 <b id="lblN">— 面</b></span>
+            <input type="range" id="msize" min="2" max="8" step="0.5" value="5" />
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <button id="btnPlay" class="btn">▶ 播放一天</button>
+          <button id="btnSave" class="btn">💾 保存对比</button>
+        </div>
+      </div>
+
+      <!-- Global site selection -->
+      <div class="side-block">
+        <div class="side-title">🗺️ 全球选址</div>
+        <div class="preset-bar">
+          <button class="preset-btn" data-lat="39.4" data-lng="98.5"  data-alt="3.0">甘肃玉门</button>
+          <button class="preset-btn" data-lat="29.6" data-lng="91.1"  data-alt="3.6">拉萨</button>
+          <button class="preset-btn" data-lat="23.0" data-lng="5.5"   data-alt="0.5">撒哈拉</button>
+          <button class="preset-btn" data-lat="37.8" data-lng="-116.7" data-alt="1.5">内华达</button>
+        </div>
+        <div id="map"></div>
+        <div class="coord-display">
+          <span>纬度 <b id="lblLat">39.40°N</b></span>
+          <span>经度 <b id="lblLng">98.50°E</b></span>
+        </div>
+      </div>
+
+      <!-- Real-time KPIs -->
+      <div class="side-block">
+        <div class="side-title">📊 实时指标</div>
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-label">瞬时功率</div>
+            <div class="kpi-value" id="kpiPower">— <small>MW</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">单位面积</div>
+            <div class="kpi-value" id="kpiPpa">— <small>kW/m²</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">DNI</div>
+            <div class="kpi-value" id="kpiDni">— <small>kW/m²</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">总光学效率</div>
+            <div class="kpi-value" id="kpiEta">—</div>
+          </div>
+          <div class="kpi small">
+            <div class="kpi-label">太阳高度角 / 方位角</div>
+            <div class="kpi-value" id="kpiSun">— / —</div>
+          </div>
+          <div class="kpi small">
+            <div class="kpi-label">余弦 / 阴影 / 截断</div>
+            <div class="kpi-value" id="kpiEffs">— / — / —</div>
+          </div>
+        </div>
+        <div class="annual-box">
+          <div class="annual-line"><span>年均功率</span><b id="annualPower">—</b><span>MW</span></div>
+          <div class="annual-line"><span>年均 ppa</span><b id="annualPpa">—</b><span>kW/m²</span></div>
+          <div class="annual-line"><span>年均 η</span><b id="annualEta">—</b></div>
+        </div>
+      </div>
+
+      <!-- Monthly power curve -->
+      <div class="side-block">
+        <div class="side-title">📈 全年月度曲线</div>
+        <div class="chart-wrap chart-small"><canvas id="chartMonthly"></canvas></div>
+      </div>
+
+      <!-- Site comparison -->
+      <div class="side-block">
+        <div class="side-title">🔬 候选场地对比</div>
+        <div class="chart-wrap chart-small"><canvas id="chartCompare"></canvas></div>
+        <ul id="siteList" class="site-list"></ul>
+        <div class="hint" id="compareHint">点击顶部「💾 保存对比」收集当前场地</div>
+      </div>
+
+      <!-- Footer credit -->
+      <div class="side-block sidebar-footer">
+        物理引擎：CUMCM 2023A 矢量化光学引擎（余弦 + 阴影/遮挡 + HFLCAL 截断 + 大气 + 反射）。
+        3D 渲染完整还原问题二最优布局全部 3520 面 5×5 m 定日镜（同心交错环，塔位 (0, −50)）。
+      </div>
+    </aside>
+  </main>
+
+  <!-- Libraries -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module" src="/static/js/scene.js"></script>
+  <script type="module" src="/static/js/main.js"></script>
+</body>
+</html>

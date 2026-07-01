@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# node (not used, but safety)
+node_modules/
+package-lock.json
+
+# runtime / logs
+*.log
+/tmp/heliostat_*
+web/*.pid
+
+# Large intermediate npy caches (regenerated on demand)
+code/p2_best_pts.npy
+code/p2_final_pts.npy
+code/p3_final_pts.npy
+code/p3_final_sizes.npy
+code/p3_final_zs.npy
+code/p1_per_eta.npy
+
+# Local search meta files
+code/p2_best_meta.json
+code/p2_top5.json
+
+# Local run outputs
+web/__pycache__/
